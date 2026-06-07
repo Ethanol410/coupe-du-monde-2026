@@ -9,9 +9,10 @@ Suivi de la Coupe du Monde FIFA 2026 (États-Unis · Canada · Mexique) : matchs
 
 ## ✨ Fonctionnalités
 
-- Accueil en 3 sections (En direct / À venir / Terminés) avec filtres par jour et par groupe/tour ; heures converties au fuseau du navigateur.
+- Accueil en 3 sections (En direct / À venir / Terminés) avec filtres par **jour**, par **groupe/tour** et par **équipe** (menu avec drapeaux) ; heures converties au fuseau du navigateur.
 - Live temps réel optionnel avec polling conditionnel (30 s **uniquement** s'il y a un match en cours) + dégradation gracieuse (« données différées »).
 - Page détail d'un match : score, infos, chronologie des buts.
+- **Fiche par nation** (`/equipe/[code]`) : prochain match, dernier résultat et calendrier complet, reliée depuis les classements et le détail.
 - Classements des 12 groupes (tri points → diff → buts pour) et bracket R32 → Finale.
 - Dark mode, responsive, SEO (sitemap, robots, OpenGraph).
 
@@ -38,8 +39,10 @@ src/lib/providers/         ← accès données (types = source de vérité)
   ├─ worldcup2026.ts       ← live temps réel (worldcup26.ir), optionnel
   ├─ composite.ts          ← statique + openfootball, dégradation gracieuse
   └─ mock.ts               ← provider déterministe (tests)
-src/lib/data/              ← API métier : getMatches/getMatchById/getLiveMatches/getStandings/getBracket
+src/lib/data/              ← API métier : getMatches/getMatchById/getLiveMatches/
+                             getStandings/getBracket/getTeams/getTeamByCode
 app/ + components/         ← UI : ne connaît QUE les types du domaine
+  routes : / · /groupes · /bracket · /match/[id] · /equipe/[code]
 app/api/live/route.ts      ← proxy serverless du live (cache court)
 ```
 
@@ -98,11 +101,11 @@ Aucune carte bancaire, aucun service payant, pas de base de données.
 |---|---|---|
 | Accueil (à venir / terminés) | ISR (`revalidate`) | 30 min |
 | Classements / bracket | ISR | 15 min |
-| Détail d'un match | ISR | 30 min |
+| Détail d'un match / fiche équipe | ISR | 30 min |
 | Live (minute / score) | Polling React Query côté client via `/api/live` | 30 s **si ≥ 1 match en cours**, sinon désactivé |
 
 ## ✅ Qualité
 
 - TypeScript strict, aucun `any`.
-- Tests : unitaires (mapping, fuseaux, classements, live, composants) + e2e (3 états, navigation, détail, dark mode).
+- **75 tests unitaires** (Vitest : mapping, fuseaux, classements, live, filtres, composants) + **9 tests e2e** (Playwright : 3 états, navigation, détail, dark mode, filtre équipe, fiche équipe).
 - Lighthouse mobile (accueil) : **Performance 93**, **Accessibilité 100**.
