@@ -19,7 +19,7 @@ export function MatchCard({ match }: { match: Match }) {
     <Link
       href={`/match/${match.id}`}
       aria-label={fr.match.detailAria}
-      className="group block border-2 border-border bg-card text-card-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="cv-auto group block border-2 border-border bg-card text-card-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
         <span className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">

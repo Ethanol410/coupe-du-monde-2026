@@ -109,9 +109,17 @@ export const fr = {
     metaDescription: (home: string, away: string) =>
       `Suivez ${home} contre ${away} : score, statut et chronologie — Coupe du Monde 2026.`,
   },
+  theme: {
+    toggle: "Basculer le thème clair/sombre",
+  },
+  ui: {
+    showMore: (n: number) => `Voir plus (${n})`,
+    showLess: "Voir moins",
+  },
   a11y: {
     liveRegion: "Matchs en direct, mis à jour automatiquement",
     flagOf: (team: string) => `Drapeau de ${team}`,
+    skipToContent: "Aller au contenu",
   },
 } as const;
 

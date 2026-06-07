@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fr } from "@/lib/labels/fr";
 import { SiteNav } from "./SiteNav";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function SiteHeader() {
   return (
@@ -12,7 +13,10 @@ export function SiteHeader() {
         >
           {fr.app.wordmark}
         </Link>
-        <SiteNav />
+        <div className="flex items-center gap-2">
+          <SiteNav />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

@@ -160,3 +160,11 @@
     animation: none;
   }
 }
+
+/* Saute le rendu des cartes hors viewport (perf), sans CLS grace a la taille reservee. */
+@layer utilities {
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 150px;
+  }
+}

@@ -16,6 +16,7 @@
 /playwright-report
 /playwright/.cache
 /.playwright-mcp
+/lh-report.json
 
 # next.js
 /.next/

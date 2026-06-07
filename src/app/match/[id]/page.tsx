@@ -18,12 +18,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const match = await getMatchById(id);
   if (!match) return { title: fr.app.title };
 
-  const title = `${match.home.name} ${fr.match.versus} ${match.away.name} — ${fr.app.title}`;
+  const matchup = `${match.home.name} ${fr.match.versus} ${match.away.name}`;
   const description = fr.detail.metaDescription(match.home.name, match.away.name);
   return {
-    title,
+    title: matchup,
     description,
-    openGraph: { title, description, type: "website" },
+    openGraph: {
+      title: `${matchup} — ${fr.app.title}`,
+      description,
+      type: "website",
+    },
   };
 }
 
@@ -39,7 +43,7 @@ export default async function MatchPage({ params }: PageProps) {
   const label = match.group ? groupLabel(match.group) : stageLabel(match.stage);
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
       <Link
         href="/"
         className="font-display text-sm uppercase tracking-wide text-primary hover:underline"

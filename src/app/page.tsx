@@ -6,7 +6,7 @@ export default async function HomePage() {
   const matches = await getMatches();
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+    <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
       <div className="mb-8">
         <p className="font-display text-xs uppercase tracking-[0.3em] text-primary">
           {fr.app.edition}
