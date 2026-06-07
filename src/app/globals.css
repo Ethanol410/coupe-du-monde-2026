@@ -4,12 +4,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Identite « Editorial kiosque » : creme / encre / rouge tournoi.
+ * Titres condenses (Oswald) + corps serif editorial (Newsreader).
+ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-body);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,72 +55,72 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.125rem; /* angles nets, esprit kiosque */
+  --background: oklch(0.971 0.012 84); /* creme #faf7f0 */
+  --foreground: oklch(0.205 0.012 60); /* encre quasi-noire */
+  --card: oklch(0.987 0.008 84);
+  --card-foreground: oklch(0.205 0.012 60);
+  --popover: oklch(0.987 0.008 84);
+  --popover-foreground: oklch(0.205 0.012 60);
+  --primary: oklch(0.521 0.211 25.8); /* rouge tournoi #c8102e */
+  --primary-foreground: oklch(0.985 0.01 84);
+  --secondary: oklch(0.92 0.013 84);
+  --secondary-foreground: oklch(0.205 0.012 60);
+  --muted: oklch(0.93 0.012 84);
+  --muted-foreground: oklch(0.44 0.012 60);
+  --accent: oklch(0.521 0.211 25.8);
+  --accent-foreground: oklch(0.985 0.01 84);
+  --destructive: oklch(0.55 0.22 27);
+  --border: oklch(0.205 0.012 60); /* filets encre */
+  --input: oklch(0.205 0.012 60);
+  --ring: oklch(0.521 0.211 25.8);
+  --chart-1: oklch(0.521 0.211 25.8);
+  --chart-2: oklch(0.44 0.012 60);
+  --chart-3: oklch(0.6 0.13 50);
+  --chart-4: oklch(0.7 0.1 90);
+  --chart-5: oklch(0.3 0.02 60);
+  --sidebar: oklch(0.987 0.008 84);
+  --sidebar-foreground: oklch(0.205 0.012 60);
+  --sidebar-primary: oklch(0.521 0.211 25.8);
+  --sidebar-primary-foreground: oklch(0.985 0.01 84);
+  --sidebar-accent: oklch(0.92 0.013 84);
+  --sidebar-accent-foreground: oklch(0.205 0.012 60);
+  --sidebar-border: oklch(0.205 0.012 60);
+  --sidebar-ring: oklch(0.521 0.211 25.8);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.178 0.012 60); /* encre profonde */
+  --foreground: oklch(0.955 0.012 84); /* creme */
+  --card: oklch(0.221 0.012 60);
+  --card-foreground: oklch(0.955 0.012 84);
+  --popover: oklch(0.221 0.012 60);
+  --popover-foreground: oklch(0.955 0.012 84);
+  --primary: oklch(0.637 0.208 26.5); /* rouge plus lumineux sur sombre */
+  --primary-foreground: oklch(0.16 0.012 60);
+  --secondary: oklch(0.28 0.012 60);
+  --secondary-foreground: oklch(0.955 0.012 84);
+  --muted: oklch(0.28 0.012 60);
+  --muted-foreground: oklch(0.72 0.012 84);
+  --accent: oklch(0.637 0.208 26.5);
+  --accent-foreground: oklch(0.16 0.012 60);
+  --destructive: oklch(0.7 0.19 27);
+  --border: oklch(0.9 0.012 84); /* filets creme sur sombre */
+  --input: oklch(0.9 0.012 84);
+  --ring: oklch(0.637 0.208 26.5);
+  --chart-1: oklch(0.637 0.208 26.5);
+  --chart-2: oklch(0.72 0.012 84);
+  --chart-3: oklch(0.7 0.13 50);
+  --chart-4: oklch(0.8 0.1 90);
+  --chart-5: oklch(0.6 0.02 84);
+  --sidebar: oklch(0.221 0.012 60);
+  --sidebar-foreground: oklch(0.955 0.012 84);
+  --sidebar-primary: oklch(0.637 0.208 26.5);
+  --sidebar-primary-foreground: oklch(0.16 0.012 60);
+  --sidebar-accent: oklch(0.28 0.012 60);
+  --sidebar-accent-foreground: oklch(0.955 0.012 84);
+  --sidebar-border: oklch(0.9 0.012 84);
+  --sidebar-ring: oklch(0.637 0.208 26.5);
 }
 
 @layer base {
@@ -126,5 +132,31 @@
   }
   html {
     @apply font-sans;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display uppercase tracking-tight;
+  }
+}
+
+/* Pastille LIVE : point pulse, coupe si l'utilisateur reduit les animations. */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+}
+.live-dot {
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
   }
 }

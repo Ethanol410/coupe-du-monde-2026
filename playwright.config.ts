@@ -23,5 +23,7 @@ export default defineConfig({
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // Provider mock -> les 3 etats (SCHEDULED/LIVE/FINISHED) sont deterministes en e2e.
+    env: { NEXT_PUBLIC_DATA_PROVIDER: "mock" },
   },
 });
