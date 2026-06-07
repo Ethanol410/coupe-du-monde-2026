@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
 import { getStaticMatches } from "@/lib/providers/static";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// Normalise le slash final eventuel (evite les doubles slashes dans les URLs).
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
+  /\/+$/,
+  "",
+);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
