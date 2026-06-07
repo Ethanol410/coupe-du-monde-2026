@@ -52,8 +52,11 @@ test.describe("accueil — 3 sections de matchs", () => {
     const teamSelect = page.getByRole("combobox", { name: "Filtrer par équipe" });
     await expect(teamSelect).toBeVisible();
 
+    // Menu custom (drapeau + nom) : ouvrir puis choisir France.
+    await teamSelect.click();
+    await page.getByRole("option", { name: "France" }).click();
+
     // Le mock : France joue 2 matchs (vs Argentine termine, vs Bresil a venir).
-    await teamSelect.selectOption({ label: "France" });
     await expect(
       page.getByRole("link", { name: "Voir le détail du match" }),
     ).toHaveCount(2);

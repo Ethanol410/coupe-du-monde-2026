@@ -97,7 +97,7 @@ export function HomeView({ matches: initialMatches }: { matches: Match[] }) {
     for (const m of matches) {
       for (const team of [m.home, m.away]) {
         if (team.code !== null && !byId.has(team.id)) {
-          byId.set(team.id, { id: team.id, name: team.name });
+          byId.set(team.id, { id: team.id, name: team.name, flagUrl: team.flagUrl });
         }
       }
     }
