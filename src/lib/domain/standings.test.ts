@@ -50,6 +50,20 @@ describe("computeStandings : tri points -> diff -> BP", () => {
     expect(rows[2]!.lost).toBe(2);
   });
 
+  it("diff egale -> departage par buts pour", () => {
+    // A bat C 3-2 ; B bat C 2-1 -> A et B : 3 pts, diff +1 chacun ; A a plus de BP.
+    const matches = [
+      finished("1", A, C, 3, 2),
+      finished("2", B, C, 2, 1),
+    ];
+    const groups = [{ group: "A", teams: [A, B, C] }];
+    const rows = computeStandings(matches, groups)[0]!.rows;
+
+    expect(rows.map((r) => r.team.id)).toEqual(["a", "b", "c"]);
+    expect(rows[0]!.goalDiff).toBe(rows[1]!.goalDiff);
+    expect(rows[0]!.goalsFor).toBeGreaterThan(rows[1]!.goalsFor);
+  });
+
   it("pre-tournoi : aucun match termine -> tout a zero", () => {
     const groups = [{ group: "A", teams: [A, B, C] }];
     const rows = computeStandings([], groups)[0]!.rows;

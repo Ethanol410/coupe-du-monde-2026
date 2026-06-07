@@ -12,6 +12,33 @@ export const fr = {
       "Suivez la Coupe du Monde FIFA 2026 : matchs à venir, en direct et terminés, en un coup d'œil.",
     tagline: "À venir · En direct · Terminés",
     edition: "États-Unis · Canada · Mexique — 2026",
+    wordmark: "CDM 26",
+  },
+  nav: {
+    home: "Accueil",
+    groups: "Groupes",
+    bracket: "Bracket",
+  },
+  pages: {
+    groups: "Groupes",
+    bracket: "Tableau final",
+  },
+  standings: {
+    rank: "#",
+    team: "Équipe",
+    played: "J",
+    won: "G",
+    drawn: "N",
+    lost: "P",
+    goalsFor: "BP",
+    goalsAgainst: "BC",
+    goalDiff: "Diff",
+    points: "Pts",
+    legend: "J joués · G gagnés · N nuls · P perdus · BP buts pour · BC buts contre",
+  },
+  bracket: {
+    title: "Tableau final",
+    empty: "Le tableau à élimination directe n'est pas encore disponible.",
   },
   live: {
     indicator: "Direct",
