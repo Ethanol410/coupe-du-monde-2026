@@ -35,15 +35,14 @@ test.describe("accueil — 3 sections de matchs", () => {
   test("le filtre par jour restreint la liste", async ({ page }) => {
     await page.goto("/");
 
-    const dayGroup = page.getByRole("group", { name: "Filtrer par jour" });
-    await expect(dayGroup).toBeVisible();
-    const dayButtons = dayGroup.getByRole("button");
-    const count = await dayButtons.count();
+    const daySelect = page.getByRole("combobox", { name: "Filtrer par jour" });
+    await expect(daySelect).toBeVisible();
+    const options = daySelect.getByRole("option");
     // « Tous les jours » + au moins un jour distinct.
-    expect(count).toBeGreaterThan(1);
+    expect(await options.count()).toBeGreaterThan(1);
 
     // Selectionner le premier jour concret reduit a une seule carte de match visible.
-    await dayButtons.nth(1).click();
+    await daySelect.selectOption({ index: 1 });
     await expect(page.getByRole("link", { name: "Voir le détail du match" })).toHaveCount(1);
   });
 });
