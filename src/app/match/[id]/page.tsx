@@ -70,11 +70,17 @@ export default async function MatchPage({ params }: PageProps) {
 
         <div className="flex flex-col gap-3 px-5 py-5">
           <div className="flex items-center gap-3">
-            <TeamRow team={match.home} />
+            <TeamRow
+              team={match.home}
+              href={match.home.code ? `/equipe/${match.home.code}` : undefined}
+            />
             <ScoreValue value={showScore ? match.score.home : null} dimmed={!showScore} />
           </div>
           <div className="flex items-center gap-3">
-            <TeamRow team={match.away} />
+            <TeamRow
+              team={match.away}
+              href={match.away.code ? `/equipe/${match.away.code}` : undefined}
+            />
             <ScoreValue value={showScore ? match.score.away : null} dimmed={!showScore} />
           </div>
         </div>

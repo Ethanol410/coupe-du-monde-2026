@@ -4,3 +4,4 @@
 export { getMatches, getMatchById, getLiveMatches } from "./matches";
 export { getStandings, computeStandings } from "./standings";
 export { getBracket, groupByStage } from "./bracket";
+export { getTeams, getTeamByCode } from "./teams";

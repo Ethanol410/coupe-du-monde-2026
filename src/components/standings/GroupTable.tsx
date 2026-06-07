@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { fr, groupLabel } from "@/lib/labels/fr";
 import type { GroupStanding } from "@/lib/providers/types";
 import { cn } from "@/lib/utils";
@@ -62,7 +63,18 @@ export function GroupTable({ standing }: { standing: GroupStanding }) {
                       aria-hidden
                     />
                   )}
-                  <span className="truncate font-display uppercase">{row.team.name}</span>
+                  {row.team.code ? (
+                    <Link
+                      href={`/equipe/${row.team.code}`}
+                      className="truncate font-display uppercase hover:underline"
+                    >
+                      {row.team.name}
+                    </Link>
+                  ) : (
+                    <span className="truncate font-display uppercase">
+                      {row.team.name}
+                    </span>
+                  )}
                 </span>
               </th>
               <td className="px-1 py-1 text-right tabular-nums">{row.played}</td>

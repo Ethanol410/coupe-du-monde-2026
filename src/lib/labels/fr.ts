@@ -40,6 +40,12 @@ export const fr = {
     title: "Tableau final",
     empty: "Le tableau à élimination directe n'est pas encore disponible.",
   },
+  team: {
+    nextMatch: "Prochain match",
+    lastResult: "Dernier résultat",
+    allMatches: "Tous les matchs",
+    noMatches: "Aucun match pour cette équipe pour le moment.",
+  },
   live: {
     indicator: "Direct",
     deferred: "Données différées — dernier état connu (source live indisponible).",

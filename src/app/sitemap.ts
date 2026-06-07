@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getStaticMatches } from "@/lib/providers/static";
+import { getStaticMatches, getStaticTeams } from "@/lib/providers/static";
 
 // Normalise le slash final eventuel (evite les doubles slashes dans les URLs).
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
@@ -19,5 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified,
   }));
 
-  return [...staticRoutes, ...matchRoutes];
+  const teamRoutes: MetadataRoute.Sitemap = getStaticTeams()
+    .filter((team) => team.code !== null)
+    .map((team) => ({ url: `${siteUrl}/equipe/${team.code}`, lastModified }));
+
+  return [...staticRoutes, ...matchRoutes, ...teamRoutes];
 }

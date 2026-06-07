@@ -7,5 +7,6 @@ describe("sitemap", () => {
     expect(urls.some((u) => u.endsWith("/groupes"))).toBe(true);
     expect(urls.some((u) => u.endsWith("/bracket"))).toBe(true);
     expect(urls.filter((u) => u.includes("/match/")).length).toBe(104);
+    expect(urls.filter((u) => u.includes("/equipe/")).length).toBe(48);
   });
 });

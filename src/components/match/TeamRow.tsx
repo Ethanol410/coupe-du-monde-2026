@@ -1,9 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 import { fr } from "@/lib/labels/fr";
 import type { Team } from "@/lib/providers/types";
 
+interface TeamRowProps {
+  team: Team;
+  /** Si fourni, le nom devient un lien vers la fiche equipe (a NE PAS utiliser dans une carte deja cliquable). */
+  href?: string;
+}
+
 /** Ligne d'equipe : drapeau (dims fixes -> pas de CLS) + nom + code FIFA. */
-export function TeamRow({ team }: { team: Team }) {
+export function TeamRow({ team, href }: TeamRowProps) {
+  const nameClass = "truncate font-display text-lg font-semibold uppercase leading-tight";
+
   return (
     <div className="flex min-w-0 flex-1 items-center gap-3">
       {team.flagUrl ? (
@@ -21,9 +30,13 @@ export function TeamRow({ team }: { team: Team }) {
           aria-hidden
         />
       )}
-      <span className="truncate font-display text-lg font-semibold uppercase leading-tight">
-        {team.name}
-      </span>
+      {href ? (
+        <Link href={href} className={`${nameClass} hover:underline`}>
+          {team.name}
+        </Link>
+      ) : (
+        <span className={nameClass}>{team.name}</span>
+      )}
       {team.code && (
         <span className="ml-auto shrink-0 font-sans text-xs text-muted-foreground tabular-nums">
           {team.code}
