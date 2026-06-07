@@ -45,4 +45,17 @@ test.describe("accueil — 3 sections de matchs", () => {
     await daySelect.selectOption({ index: 1 });
     await expect(page.getByRole("link", { name: "Voir le détail du match" })).toHaveCount(1);
   });
+
+  test("le filtre par equipe ne montre que les matchs de la nation", async ({ page }) => {
+    await page.goto("/");
+
+    const teamSelect = page.getByRole("combobox", { name: "Filtrer par équipe" });
+    await expect(teamSelect).toBeVisible();
+
+    // Le mock : France joue 2 matchs (vs Argentine termine, vs Bresil a venir).
+    await teamSelect.selectOption({ label: "France" });
+    await expect(
+      page.getByRole("link", { name: "Voir le détail du match" }),
+    ).toHaveCount(2);
+  });
 });

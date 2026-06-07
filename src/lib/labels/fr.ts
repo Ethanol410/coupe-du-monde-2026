@@ -56,6 +56,8 @@ export const fr = {
     allGroups: "Tout",
     groups: "Groupes",
     rounds: "Phase finale",
+    teamLabel: "Filtrer par équipe",
+    allTeams: "Toutes les équipes",
   },
   status: {
     SCHEDULED: "À venir",
