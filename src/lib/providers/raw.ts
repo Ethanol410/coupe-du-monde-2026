@@ -64,6 +64,15 @@ export const OpenfootballScoreSchema = z.object({
   p: z.array(z.number()).optional(),
 });
 
+export const OpenfootballGoalSchema = z.object({
+  name: z.string(),
+  minute: z.number(),
+  offset: z.number().optional(),
+  penalty: z.boolean().optional(),
+  owngoal: z.boolean().optional(),
+});
+export type OpenfootballGoal = z.infer<typeof OpenfootballGoalSchema>;
+
 export const OpenfootballMatchSchema = z.object({
   round: z.string().optional(),
   date: z.string(),
@@ -73,6 +82,8 @@ export const OpenfootballMatchSchema = z.object({
   group: z.string().optional(),
   ground: z.string().optional(),
   score: OpenfootballScoreSchema.optional(),
+  goals1: z.array(OpenfootballGoalSchema).optional(),
+  goals2: z.array(OpenfootballGoalSchema).optional(),
 });
 export type OpenfootballMatch = z.infer<typeof OpenfootballMatchSchema>;
 

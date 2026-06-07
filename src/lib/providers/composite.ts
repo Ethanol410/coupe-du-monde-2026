@@ -42,10 +42,13 @@ export const compositeProvider: DataProvider = {
   },
 
   async getMatchById(id: string): Promise<MatchDetail | null> {
-    const found = (await enrichedMatches()).find((m) => m.id === id);
-    if (!found) return null;
-    // events/lineups : enrichis en Phase 4 ; "non disponible" pour l'instant.
-    return { ...found, events: [] };
+    const base = getStaticMatches().find((m) => m.id === id);
+    if (!base) return null;
+    const results = await fetchResults();
+    const enriched = enrich(base, results);
+    const found = results.get(buildJoinKey(base.home.name, base.away.name));
+    // events depuis openfootball ; lineups non fourni par la source -> "non disponible".
+    return { ...enriched, events: found?.events ?? [] };
   },
 
   async getLiveMatches(): Promise<Match[]> {

@@ -1,11 +1,14 @@
 /**
- * Couche 2 — enrichissement des scores via openfootball (PRD §7).
+ * Couche 2 — enrichissement scores + buts via openfootball (PRD §7).
  * Source distante gratuite, sans auth. DEGRADATION GRACIEUSE : toute erreur
  * reseau/parse renvoie une Map vide (jamais de throw) — l'app reste sur la couche statique.
- * Les events (goals1/goals2) sont ignores ici (Phase 4).
  */
-import { OpenfootballSchema, type OpenfootballData } from "./raw";
-import type { MatchStatus } from "./types";
+import {
+  OpenfootballSchema,
+  type OpenfootballData,
+  type OpenfootballGoal,
+} from "./raw";
+import type { MatchEvent, MatchEventType, MatchStatus } from "./types";
 
 const OPENFOOTBALL_URL =
   "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
@@ -13,6 +16,28 @@ const OPENFOOTBALL_URL =
 export interface ResultEnrichment {
   score: { home: number; away: number };
   status: MatchStatus;
+  events: MatchEvent[];
+}
+
+function goalType(goal: OpenfootballGoal): MatchEventType {
+  if (goal.owngoal) return "OWN_GOAL";
+  if (goal.penalty) return "PENALTY";
+  return "GOAL";
+}
+
+/** Buts openfootball (goals1=domicile, goals2=exterieur) -> events tries par minute. */
+export function mapGoalsToEvents(
+  goals1?: OpenfootballGoal[],
+  goals2?: OpenfootballGoal[],
+): MatchEvent[] {
+  const events: MatchEvent[] = [];
+  for (const g of goals1 ?? []) {
+    events.push({ minute: g.minute, type: goalType(g), team: "home", player: g.name });
+  }
+  for (const g of goals2 ?? []) {
+    events.push({ minute: g.minute, type: goalType(g), team: "away", player: g.name });
+  }
+  return events.sort((a, b) => a.minute - b.minute);
 }
 
 /** Normalise un nom d'equipe pour la jointure (insensible casse/espaces). */
@@ -39,6 +64,7 @@ export function buildEnrichmentMap(
     map.set(buildJoinKey(m.team1, m.team2), {
       score: { home, away },
       status: "FINISHED",
+      events: mapGoalsToEvents(m.goals1, m.goals2),
     });
   }
   return map;

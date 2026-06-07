@@ -5,10 +5,9 @@ import { LocalTime } from "@/components/LocalTime";
 import { ScoreValue } from "@/components/match/MatchScore";
 import { StatusBadge } from "@/components/match/StatusBadge";
 import { TeamRow } from "@/components/match/TeamRow";
+import { Timeline } from "@/components/match/Timeline";
 import { getMatchById } from "@/lib/data";
 import { fr, groupLabel, stageLabel } from "@/lib/labels/fr";
-
-// Stub Phase 2 : essentiels du match + lien retour (chronologie complete = Phase 4).
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -18,8 +17,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { id } = await params;
   const match = await getMatchById(id);
   if (!match) return { title: fr.app.title };
+
+  const title = `${match.home.name} ${fr.match.versus} ${match.away.name} — ${fr.app.title}`;
+  const description = fr.detail.metaDescription(match.home.name, match.away.name);
   return {
-    title: `${match.home.name} ${fr.match.versus} ${match.away.name} — ${fr.app.title}`,
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
   };
 }
 
@@ -71,7 +75,23 @@ export default async function MatchPage({ params }: PageProps) {
         </div>
       </article>
 
-      <p className="mt-6 font-sans text-muted-foreground">{fr.match.eventsSoon}</p>
+      <section className="mt-8" aria-label={fr.detail.timeline}>
+        <h2 className="mb-3 border-b-2 border-border pb-1 text-2xl">
+          {fr.detail.timeline}
+        </h2>
+        <Timeline events={match.events} />
+      </section>
+
+      <section className="mt-8" aria-label={fr.detail.lineups}>
+        <h2 className="mb-3 border-b-2 border-border pb-1 text-2xl">
+          {fr.detail.lineups}
+        </h2>
+        {match.lineups ? null : (
+          <p className="font-sans text-muted-foreground">
+            {fr.detail.lineupsUnavailable}
+          </p>
+        )}
+      </section>
     </main>
   );
 }

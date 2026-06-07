@@ -3,7 +3,7 @@
  * Règle CLAUDE.md : aucune chaîne de texte en dur dans les composants.
  * Toute chaîne affichée passe par ce fichier (architecture i18n-ready, PRD §10).
  */
-import type { MatchStatus, Stage } from "@/lib/providers/types";
+import type { MatchEventType, MatchStatus, Stage } from "@/lib/providers/types";
 
 export const fr = {
   app: {
@@ -65,6 +65,23 @@ export const fr = {
     eventsSoon: "Chronologie des événements bientôt disponible.",
     notFound: "Match introuvable.",
   },
+  event: {
+    GOAL: "But",
+    OWN_GOAL: "But contre son camp",
+    PENALTY: "Penalty",
+    YELLOW: "Carton jaune",
+    RED: "Carton rouge",
+    SUBSTITUTION: "Remplacement",
+  } satisfies Record<MatchEventType, string>,
+  detail: {
+    timeline: "Chronologie",
+    timelineEmpty: "Chronologie des événements non disponible.",
+    lineups: "Compositions",
+    lineupsUnavailable: "Compositions non disponibles.",
+    info: "Informations",
+    metaDescription: (home: string, away: string) =>
+      `Suivez ${home} contre ${away} : score, statut et chronologie — Coupe du Monde 2026.`,
+  },
   a11y: {
     liveRegion: "Matchs en direct, mis à jour automatiquement",
     flagOf: (team: string) => `Drapeau de ${team}`,
@@ -87,4 +104,8 @@ export function statusLabel(status: MatchStatus): string {
 
 export function groupLabel(letter: string): string {
   return `Groupe ${letter}`;
+}
+
+export function eventLabel(type: MatchEventType): string {
+  return fr.event[type];
 }

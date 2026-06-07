@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { OpenfootballData } from "./raw";
-import { buildEnrichmentMap, buildJoinKey, fetchResults } from "./openfootball";
+import {
+  buildEnrichmentMap,
+  buildJoinKey,
+  fetchResults,
+  mapGoalsToEvents,
+} from "./openfootball";
 
 const SAMPLE: OpenfootballData = {
   name: "World Cup 2026",
@@ -33,7 +38,11 @@ describe("openfootball : table d'enrichissement", () => {
   it("mappe un score ft en FINISHED home-away", () => {
     const map = buildEnrichmentMap(SAMPLE);
     const entry = map.get(buildJoinKey("Mexico", "South Africa"));
-    expect(entry).toEqual({ score: { home: 2, away: 1 }, status: "FINISHED" });
+    expect(entry).toEqual({
+      score: { home: 2, away: 1 },
+      status: "FINISHED",
+      events: [],
+    });
   });
 
   it("prefere la prolongation (et) au temps reglementaire (ft)", () => {
@@ -51,6 +60,27 @@ describe("openfootball : table d'enrichissement", () => {
     expect(buildJoinKey(" Mexico ", "SOUTH AFRICA")).toBe(
       buildJoinKey("mexico", "south africa"),
     );
+  });
+});
+
+describe("mapGoalsToEvents", () => {
+  it("mappe buts/penalty/csc avec le bon cote et trie par minute", () => {
+    const events = mapGoalsToEvents(
+      [
+        { name: "Giroud", minute: 78 },
+        { name: "Mbappe", minute: 23, penalty: true },
+      ],
+      [{ name: "Messi", minute: 60, owngoal: true }],
+    );
+    expect(events.map((e) => [e.minute, e.type, e.team, e.player])).toEqual([
+      [23, "PENALTY", "home", "Mbappe"],
+      [60, "OWN_GOAL", "away", "Messi"],
+      [78, "GOAL", "home", "Giroud"],
+    ]);
+  });
+
+  it("renvoie [] sans buts", () => {
+    expect(mapGoalsToEvents()).toEqual([]);
   });
 });
 
