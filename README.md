@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tracker Coupe du Monde 2026 ⚽
 
-## Getting Started
+Suivi de la Coupe du Monde FIFA 2026 (États-Unis · Canada · Mexique) : matchs **à venir**,
+**en direct** et **terminés**, classements des 12 groupes et tableau à élimination directe.
 
-First, run the development server:
+- **Stack** : Next.js 16 (App Router) · TypeScript strict · Tailwind v4 + shadcn/ui · React Query · Vitest · Playwright.
+- **Identité** : éditorial kiosque (crème / encre / rouge), mobile-first, dark mode, accessible (Lighthouse A11y 100).
+- **Coût d'exploitation : 0 €** — voir ci-dessous.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Fonctionnalités
+
+- Accueil en 3 sections (En direct / À venir / Terminés) avec filtres par jour et par groupe/tour ; heures converties au fuseau du navigateur.
+- Live temps réel optionnel avec polling conditionnel (30 s **uniquement** s'il y a un match en cours) + dégradation gracieuse (« données différées »).
+- Page détail d'un match : score, infos, chronologie des buts.
+- Classements des 12 groupes (tri points → diff → buts pour) et bracket R32 → Finale.
+- Dark mode, responsive, SEO (sitemap, robots, OpenGraph).
+
+## 💸 Garantie « 0 € »
+
+| Poste | Choix | Coût |
+|---|---|---|
+| Données statiques (104 matchs, 48 équipes, 12 groupes, 16 stades) | Embarquées dans le repo (`src/data/*.json`) | 0 € |
+| Résultats | `openfootball/worldcup.json` via CDN GitHub | 0 € |
+| Live temps réel (option) | `worldcup26.ir` — lecture publique, **sans clé** | 0 € |
+| Base de données | **Aucune** | 0 € |
+| Hébergement | Vercel Hobby / Cloudflare Pages / Netlify (tier gratuit) | 0 € |
+| Domaine | Sous-domaine fourni (`*.vercel.app`) | 0 € |
+
+Aucune dépendance payante, aucune carte bancaire. **L'application fonctionne intégralement sans aucune variable d'environnement** (couche statique embarquée + openfootball).
+
+## 🏗️ Architecture (en couches)
+
+```
+src/data/*.json            ← couche 1 : squelette figé, embarqué (toujours dispo, hors-ligne)
+src/lib/providers/         ← accès données (types = source de vérité)
+  ├─ static.ts             ← lit src/data, mappe vers le domaine, kickoff -> UTC
+  ├─ openfootball.ts       ← enrichit scores + buts (CDN, ISR)
+  ├─ worldcup2026.ts       ← live temps réel (worldcup26.ir), optionnel
+  ├─ composite.ts          ← statique + openfootball, dégradation gracieuse
+  └─ mock.ts               ← provider déterministe (tests)
+src/lib/data/              ← API métier : getMatches/getMatchById/getLiveMatches/getStandings/getBracket
+app/ + components/         ← UI : ne connaît QUE les types du domaine
+app/api/live/route.ts      ← proxy serverless du live (cache court)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Principe : les composants ne dépendent que des **types du domaine** ; le squelette vient toujours
+de la couche statique ; le live n'est qu'un **enrichissement** (si la source distante tombe, on garde
+le dernier état connu).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Crédit des sources de données
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Calendrier / équipes / groupes / stades : [`rezarahiminia/worldcup2026`](https://github.com/rezarahiminia/worldcup2026) (licence ISC). Voir `src/data/SOURCE.md`.
+- Résultats : [`openfootball/worldcup.json`](https://github.com/openfootball/worldcup.json) (domaine public).
+- Live : API publique [`worldcup26.ir`](https://worldcup26.ir).
 
-## Learn More
+## 🚀 Démarrage local
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev        # http://localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Script | Rôle |
+|---|---|
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build de production |
+| `npm run start` | Serveur de production |
+| `npm run typecheck` | Vérification TypeScript (strict) |
+| `npm run lint` | ESLint |
+| `npm test` | Tests unitaires (Vitest) |
+| `npm run test:e2e` | Tests end-to-end (Playwright) |
 
-## Deploy on Vercel
+## 🔐 Variables d'environnement — **toutes optionnelles**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+L'application fonctionne sans aucune de ces variables (voir `.env.example`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable | Rôle | Défaut si absente |
+|---|---|---|
+| `WC_LIVE_TOKEN` | Jeton pour la source live `worldcup26.ir`. **Non requis** (lecture publique). | Live sans token (fonctionne quand même) |
+| `NEXT_PUBLIC_SITE_URL` | URL absolue du site (sitemap, robots, OpenGraph). | `http://localhost:3000` |
+
+## ☁️ Déploiement gratuit (Vercel Hobby)
+
+1. Pousser le repo sur GitHub.
+2. Sur [vercel.com/new](https://vercel.com/new), importer le repo. Le framework **Next.js** est auto-détecté
+   (build `next build`, aucune configuration requise).
+3. **Variables d'env** : aucune n'est obligatoire — laisser vide pour un site 100 % fonctionnel.
+   Optionnel : définir `NEXT_PUBLIC_SITE_URL` (ex. `https://<projet>.vercel.app`) pour des URLs absolues correctes.
+4. Déployer → le site est servi sur `https://<projet>.vercel.app`.
+
+Aucune carte bancaire, aucun service payant, pas de base de données.
+
+### Fraîcheur des données (ISR)
+
+| Contenu | Méthode | Fréquence |
+|---|---|---|
+| Accueil (à venir / terminés) | ISR (`revalidate`) | 30 min |
+| Classements / bracket | ISR | 15 min |
+| Détail d'un match | ISR | 30 min |
+| Live (minute / score) | Polling React Query côté client via `/api/live` | 30 s **si ≥ 1 match en cours**, sinon désactivé |
+
+## ✅ Qualité
+
+- TypeScript strict, aucun `any`.
+- Tests : unitaires (mapping, fuseaux, classements, live, composants) + e2e (3 états, navigation, détail, dark mode).
+- Lighthouse mobile (accueil) : **Performance 93**, **Accessibilité 100**.

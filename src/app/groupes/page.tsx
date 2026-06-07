@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Classements des 12 groupes de la Coupe du Monde 2026.",
 };
 
+// ISR : classements (PRD §9).
+export const revalidate = 900;
+
 export default async function GroupsPage() {
   const standings = await getStandings();
 

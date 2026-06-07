@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Tableau à élimination directe de la Coupe du Monde 2026.",
 };
 
+// ISR : bracket (PRD §9).
+export const revalidate = 900;
+
 export default async function BracketPage() {
   const rounds = await getBracket();
 

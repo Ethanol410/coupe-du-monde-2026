@@ -75,7 +75,10 @@ export async function fetchResults(
   signal?: AbortSignal,
 ): Promise<Map<string, ResultEnrichment>> {
   try {
-    const res = await fetch(OPENFOOTBALL_URL, signal ? { signal } : undefined);
+    const res = await fetch(OPENFOOTBALL_URL, {
+      next: { revalidate: 900 }, // 15 min : permet l'ISR des pages serveur
+      ...(signal ? { signal } : {}),
+    });
     if (!res.ok) return new Map();
     const json: unknown = await res.json();
     const parsed = OpenfootballSchema.safeParse(json);
