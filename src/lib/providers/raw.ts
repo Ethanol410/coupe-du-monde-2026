@@ -81,3 +81,11 @@ export const OpenfootballSchema = z.object({
   matches: z.array(OpenfootballMatchSchema),
 });
 export type OpenfootballData = z.infer<typeof OpenfootballSchema>;
+
+// --- worldcup26.ir (couche live temps reel — distante, non fiable) ---
+// Meme forme que les matchs statiques (jointure par `id`), via GET /get/games.
+
+export const Worldcup2026Schema = z.object({
+  games: z.array(RawMatchSchema),
+});
+export type Worldcup2026Data = z.infer<typeof Worldcup2026Schema>;

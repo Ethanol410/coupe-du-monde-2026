@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Oswald, Newsreader } from "next/font/google";
 import "./globals.css";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { fr } from "@/lib/labels/fr";
 
 // Police d'affichage condensee (titres, scores, noms d'equipes).
@@ -33,7 +34,9 @@ export default function RootLayout({
       lang="fr"
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

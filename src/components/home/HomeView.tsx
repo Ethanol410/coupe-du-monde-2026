@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { hasLiveMatches } from "@/lib/domain/live";
 import { formatKickoffDate, localDayKey } from "@/lib/datetime";
 import { fr } from "@/lib/labels/fr";
+import { useLiveMatches } from "@/lib/use-live-matches";
 import { useTimeZone } from "@/lib/use-timezone";
 import type { Match, Stage } from "@/lib/providers/types";
 import { DayFilter, type DayOption } from "./DayFilter";
@@ -26,10 +28,13 @@ function matchesFilter(match: Match, filterKey: string): boolean {
   return true;
 }
 
-export function HomeView({ matches }: { matches: Match[] }) {
+export function HomeView({ matches: initialMatches }: { matches: Match[] }) {
+  const { matches, deferred } = useLiveMatches(initialMatches);
   const timeZone = useTimeZone();
   const [day, setDay] = useState<string | null>(null);
   const [filterKey, setFilterKey] = useState<string>("");
+
+  const liveOngoing = hasLiveMatches(matches);
 
   const byGroup = useMemo(
     () => matches.filter((m) => matchesFilter(m, filterKey)),
@@ -82,6 +87,25 @@ export function HomeView({ matches }: { matches: Match[] }) {
 
   return (
     <div className="flex flex-col gap-6">
+      {(liveOngoing || deferred) && (
+        <div className="flex flex-wrap items-center gap-3" aria-live="polite">
+          {liveOngoing && (
+            <span className="inline-flex items-center gap-1.5 bg-primary px-2 py-0.5 font-display text-xs uppercase tracking-wider text-primary-foreground">
+              <span
+                className="live-dot inline-block size-2 rounded-full bg-current"
+                aria-hidden
+              />
+              {fr.live.indicator}
+            </span>
+          )}
+          {deferred && (
+            <span className="font-sans text-sm text-muted-foreground">
+              {fr.live.deferred}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         <GroupFilter
           groups={groups}

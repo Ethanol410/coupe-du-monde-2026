@@ -13,6 +13,10 @@ export const fr = {
     tagline: "À venir · En direct · Terminés",
     edition: "États-Unis · Canada · Mexique — 2026",
   },
+  live: {
+    indicator: "Direct",
+    deferred: "Données différées — dernier état connu (source live indisponible).",
+  },
   sections: {
     live: { title: "En direct", empty: "Aucun match en cours pour le moment." },
     upcoming: { title: "À venir", empty: "Aucun match à venir avec ce filtre." },
