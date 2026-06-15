@@ -110,9 +110,12 @@ export const fr = {
   } satisfies Record<MatchEventType, string>,
   detail: {
     timeline: "Chronologie",
-    timelineEmpty: "Chronologie des événements non disponible.",
+    timelineEmpty: "Aucun but à afficher pour ce match.",
+    dataNote:
+      "Buts uniquement : les cartons et les compositions ne sont pas fournis par la source de données gratuite.",
     lineups: "Compositions",
-    lineupsUnavailable: "Compositions non disponibles.",
+    lineupsUnavailable:
+      "Compositions non disponibles (non fournies par la source de données gratuite).",
     info: "Informations",
     metaDescription: (home: string, away: string) =>
       `Suivez ${home} contre ${away} : score, statut et chronologie — Coupe du Monde 2026.`,

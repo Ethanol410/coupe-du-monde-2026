@@ -91,9 +91,12 @@ export default async function MatchPage({ params }: PageProps) {
       </article>
 
       <section className="mt-8" aria-label={fr.detail.timeline}>
-        <h2 className="mb-3 border-b-2 border-border pb-1 text-2xl">
+        <h2 className="border-b-2 border-border pb-1 text-2xl">
           {fr.detail.timeline}
         </h2>
+        <p className="mb-3 mt-1 font-sans text-xs text-muted-foreground">
+          {fr.detail.dataNote}
+        </p>
         <Timeline events={match.events} />
       </section>
 

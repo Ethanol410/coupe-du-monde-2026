@@ -21,7 +21,7 @@ describe("Timeline", () => {
   it("affiche un état vide quand aucun event", () => {
     render(<Timeline events={[]} />);
     expect(
-      screen.getByText("Chronologie des événements non disponible."),
+      screen.getByText("Aucun but à afficher pour ce match."),
     ).toBeInTheDocument();
   });
 });
