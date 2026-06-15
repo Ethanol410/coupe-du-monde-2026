@@ -8,8 +8,9 @@ export const metadata: Metadata = {
   description: "Classements des 12 groupes de la Coupe du Monde 2026.",
 };
 
-// ISR : classements (PRD §9).
-export const revalidate = 900;
+// Rendu dynamique : classements toujours a jour pendant le tournoi
+// (sources distantes mises en cache -> rendu peu couteux).
+export const dynamic = "force-dynamic";
 
 export default async function GroupsPage() {
   const standings = await getStandings();

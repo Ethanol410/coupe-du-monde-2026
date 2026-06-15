@@ -10,7 +10,7 @@ import {
   fetchResults,
   type ResultEnrichment,
 } from "./openfootball";
-import { fetchLive } from "./worldcup2026";
+import { fetchLive, type LiveEnrichment } from "./worldcup2026";
 import {
   getStaticGroups,
   getStaticMatches,
@@ -24,61 +24,66 @@ import type {
   MatchFilter,
 } from "./types";
 
-function enrich(match: Match, results: Map<string, ResultEnrichment>): Match {
-  const found = results.get(buildJoinKey(match.home.name, match.away.name));
-  if (!found) return match;
-  return { ...match, score: found.score, status: found.status };
+/**
+ * Applique sur un match : openfootball (par nom) puis worldcup26 (par id, fait
+ * autorite pour score/statut/minute car jointure fiable + gere le live).
+ */
+function enrichOne(
+  match: Match,
+  results: Map<string, ResultEnrichment>,
+  live: Map<string, LiveEnrichment>,
+): Match {
+  let merged = match;
+  const off = results.get(buildJoinKey(match.home.name, match.away.name));
+  if (off) merged = { ...merged, score: off.score, status: off.status };
+  const liveEnrichment = live.get(match.id);
+  if (liveEnrichment) {
+    merged = {
+      ...merged,
+      score: liveEnrichment.score,
+      status: liveEnrichment.status,
+      minute: liveEnrichment.minute,
+    };
+  }
+  return merged;
 }
 
-async function enrichedMatches(): Promise<Match[]> {
+/** Charge le squelette enrichi par les deux sources (degradation gracieuse). */
+async function loadEnriched(): Promise<{
+  matches: Match[];
+  results: Map<string, ResultEnrichment>;
+}> {
   const skeleton = getStaticMatches();
-  const results = await fetchResults();
-  if (results.size === 0) return skeleton;
-  return skeleton.map((m) => enrich(m, results));
+  const [results, live] = await Promise.all([fetchResults(), fetchLive()]);
+  const matches = skeleton.map((m) => enrichOne(m, results, live.live));
+  return { matches, results };
 }
 
 export const compositeProvider: DataProvider = {
   async getMatches(filter?: MatchFilter): Promise<Match[]> {
-    return applyMatchFilter(await enrichedMatches(), filter);
+    return applyMatchFilter((await loadEnriched()).matches, filter);
   },
 
   async getMatchById(id: string): Promise<MatchDetail | null> {
-    const base = getStaticMatches().find((m) => m.id === id);
-    if (!base) return null;
-
-    // openfootball (par nom) : score/statut + events ; worldcup26 (par id) :
-    // score/statut/minute, fait autorite (jointure fiable, gere le live).
-    const [results, live] = await Promise.all([fetchResults(), fetchLive()]);
-    const off = results.get(buildJoinKey(base.home.name, base.away.name));
-    const liveEnrichment = live.live.get(base.id);
-
-    let merged: Match = base;
-    if (off) {
-      merged = { ...merged, score: off.score, status: off.status };
-    }
-    if (liveEnrichment) {
-      merged = {
-        ...merged,
-        score: liveEnrichment.score,
-        status: liveEnrichment.status,
-        minute: liveEnrichment.minute,
-      };
-    }
-
-    // lineups non fourni par les sources -> "non disponible".
-    return { ...merged, events: off?.events ?? [] };
+    const { matches, results } = await loadEnriched();
+    const found = matches.find((m) => m.id === id);
+    if (!found) return null;
+    // events depuis openfootball (buts) ; cartons/compositions non fournis -> "non disponible".
+    const off = results.get(buildJoinKey(found.home.name, found.away.name));
+    return { ...found, events: off?.events ?? [] };
   },
 
   async getLiveMatches(): Promise<Match[]> {
-    // Aucune source live en Phase 1 (branchee en Phase 3) -> aucun match LIVE.
-    return (await enrichedMatches()).filter((m) => m.status === "LIVE");
+    return (await loadEnriched()).matches.filter(
+      (m) => m.status === "LIVE" || m.status === "HALFTIME",
+    );
   },
 
   async getStandings(): Promise<GroupStanding[]> {
-    return computeStandings(await enrichedMatches(), getStaticGroups());
+    return computeStandings((await loadEnriched()).matches, getStaticGroups());
   },
 
   async getBracket(): Promise<BracketRound[]> {
-    return groupByStage(await enrichedMatches());
+    return groupByStage((await loadEnriched()).matches);
   },
 };
