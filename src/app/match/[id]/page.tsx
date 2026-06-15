@@ -7,20 +7,16 @@ import { StatusBadge } from "@/components/match/StatusBadge";
 import { TeamRow } from "@/components/match/TeamRow";
 import { Timeline } from "@/components/match/Timeline";
 import { getMatchById } from "@/lib/data";
-import { getStaticMatches } from "@/lib/providers/static";
 import { fr, groupLabel, stageLabel } from "@/lib/labels/fr";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-// ISR : matchs termines/a venir (PRD §9). Le live minute-par-minute passe par /api/live.
-export const revalidate = 1800;
-
-// Prerendre les 104 matchs (ids statiques) -> pages ISR au lieu de dynamiques.
-export function generateStaticParams(): Array<{ id: string }> {
-  return getStaticMatches().map((match) => ({ id: match.id }));
-}
+// Rendu dynamique : le detail reflete toujours l'etat courant (score/statut/minute,
+// events) pendant le tournoi. Les sources distantes sont mises en cache (15 min
+// openfootball, 30 s worldcup26) -> rendu peu couteux, jamais de snapshot perime.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;

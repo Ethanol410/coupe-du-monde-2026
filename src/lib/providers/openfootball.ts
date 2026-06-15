@@ -25,6 +25,12 @@ function goalType(goal: OpenfootballGoal): MatchEventType {
   return "GOAL";
 }
 
+/** Minute d'un but : extrait les chiffres de tete ("45+5" -> 45, "9"/9 -> 9). */
+function goalMinute(value: number | string): number {
+  const digits = String(value).match(/\d+/);
+  return digits ? Number(digits[0]) : 0;
+}
+
 /** Buts openfootball (goals1=domicile, goals2=exterieur) -> events tries par minute. */
 export function mapGoalsToEvents(
   goals1?: OpenfootballGoal[],
@@ -32,10 +38,10 @@ export function mapGoalsToEvents(
 ): MatchEvent[] {
   const events: MatchEvent[] = [];
   for (const g of goals1 ?? []) {
-    events.push({ minute: g.minute, type: goalType(g), team: "home", player: g.name });
+    events.push({ minute: goalMinute(g.minute), type: goalType(g), team: "home", player: g.name });
   }
   for (const g of goals2 ?? []) {
-    events.push({ minute: g.minute, type: goalType(g), team: "away", player: g.name });
+    events.push({ minute: goalMinute(g.minute), type: goalType(g), team: "away", player: g.name });
   }
   return events.sort((a, b) => a.minute - b.minute);
 }

@@ -82,6 +82,20 @@ describe("mapGoalsToEvents", () => {
   it("renvoie [] sans buts", () => {
     expect(mapGoalsToEvents()).toEqual([]);
   });
+
+  it("gere les minutes en chaine et le temps additionnel (\"9\", \"45+5\")", () => {
+    const events = mapGoalsToEvents(
+      [
+        { name: "B", minute: "45+5" },
+        { name: "A", minute: "9" },
+      ],
+      [],
+    );
+    expect(events.map((e) => [e.minute, e.player])).toEqual([
+      [9, "A"],
+      [45, "B"],
+    ]);
+  });
 });
 
 describe("openfootball : degradation gracieuse", () => {

@@ -57,17 +57,21 @@ export const RawGroupArraySchema = z.array(RawGroupSchema);
 
 // --- openfootball (couche 2, scores — distante, non fiable) ---
 
+// openfootball melange parfois nombres et chaines ("2" / 2, minute "9" / 9)
+// selon l'edition -> on coerce pour tolerer les deux.
 export const OpenfootballScoreSchema = z.object({
-  ft: z.array(z.number()).optional(),
-  ht: z.array(z.number()).optional(),
-  et: z.array(z.number()).optional(),
-  p: z.array(z.number()).optional(),
+  ft: z.array(z.coerce.number()).optional(),
+  ht: z.array(z.coerce.number()).optional(),
+  et: z.array(z.coerce.number()).optional(),
+  p: z.array(z.coerce.number()).optional(),
 });
 
 export const OpenfootballGoalSchema = z.object({
   name: z.string(),
-  minute: z.number(),
-  offset: z.number().optional(),
+  // minute peut etre un nombre, "9", ou un temps additionnel "45+5" -> on garde
+  // la valeur brute et on extrait les chiffres au mapping (sinon NaN casse le parse).
+  minute: z.union([z.number(), z.string()]),
+  offset: z.union([z.number(), z.string()]).optional(),
   penalty: z.boolean().optional(),
   owngoal: z.boolean().optional(),
 });

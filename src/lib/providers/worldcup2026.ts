@@ -76,6 +76,8 @@ export async function fetchLive(signal?: AbortSignal): Promise<LiveResult> {
     const res = await fetch(LIVE_URL, {
       ...(signal ? { signal } : {}),
       headers,
+      // Cache court partage (proxy /api/live + page detail) -> protege le serveur .ir fragile.
+      next: { revalidate: 30 },
     });
     if (!res.ok) return UNREACHABLE;
     const json: unknown = await res.json();

@@ -10,6 +10,7 @@ import {
   fetchResults,
   type ResultEnrichment,
 } from "./openfootball";
+import { fetchLive } from "./worldcup2026";
 import {
   getStaticGroups,
   getStaticMatches,
@@ -44,11 +45,28 @@ export const compositeProvider: DataProvider = {
   async getMatchById(id: string): Promise<MatchDetail | null> {
     const base = getStaticMatches().find((m) => m.id === id);
     if (!base) return null;
-    const results = await fetchResults();
-    const enriched = enrich(base, results);
-    const found = results.get(buildJoinKey(base.home.name, base.away.name));
-    // events depuis openfootball ; lineups non fourni par la source -> "non disponible".
-    return { ...enriched, events: found?.events ?? [] };
+
+    // openfootball (par nom) : score/statut + events ; worldcup26 (par id) :
+    // score/statut/minute, fait autorite (jointure fiable, gere le live).
+    const [results, live] = await Promise.all([fetchResults(), fetchLive()]);
+    const off = results.get(buildJoinKey(base.home.name, base.away.name));
+    const liveEnrichment = live.live.get(base.id);
+
+    let merged: Match = base;
+    if (off) {
+      merged = { ...merged, score: off.score, status: off.status };
+    }
+    if (liveEnrichment) {
+      merged = {
+        ...merged,
+        score: liveEnrichment.score,
+        status: liveEnrichment.status,
+        minute: liveEnrichment.minute,
+      };
+    }
+
+    // lineups non fourni par les sources -> "non disponible".
+    return { ...merged, events: off?.events ?? [] };
   },
 
   async getLiveMatches(): Promise<Match[]> {
