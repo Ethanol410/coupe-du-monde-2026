@@ -12,7 +12,9 @@ async function fetchLivePayload(): Promise<LivePayload> {
 
 /**
  * Etat live des matchs : part des matchs rendus cote serveur (initialData),
- * puis poll /api/live UNIQUEMENT s'il existe >=1 match live (PRD §9).
+ * reconcilie TOUJOURS une fois au montage via /api/live (recupere les matchs
+ * termines/en cours meme si le HTML ISR est perime), puis poll toutes les 30 s
+ * UNIQUEMENT s'il existe >=1 match en cours (PRD §9).
  * En cas d'echec reseau, React Query conserve la derniere donnee connue.
  */
 export function useLiveMatches(initialMatches: Match[]): LivePayload {
@@ -20,6 +22,9 @@ export function useLiveMatches(initialMatches: Match[]): LivePayload {
     queryKey: ["live"],
     queryFn: fetchLivePayload,
     initialData: { matches: initialMatches, deferred: false },
+    // initialData = rendu serveur (peut etre perime) -> on refetch au montage.
+    refetchOnMount: "always",
+    staleTime: 0,
     refetchInterval: (query) =>
       liveRefetchInterval(query.state.data?.matches ?? []),
     refetchOnWindowFocus: true,
