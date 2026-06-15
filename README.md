@@ -35,9 +35,9 @@ Aucune dépendance payante, aucune carte bancaire. **L'application fonctionne in
 src/data/*.json            ← couche 1 : squelette figé, embarqué (toujours dispo, hors-ligne)
 src/lib/providers/         ← accès données (types = source de vérité)
   ├─ static.ts             ← lit src/data, mappe vers le domaine, kickoff -> UTC
-  ├─ openfootball.ts       ← enrichit scores + buts (CDN, ISR)
-  ├─ worldcup2026.ts       ← live temps réel (worldcup26.ir), optionnel
-  ├─ composite.ts          ← statique + openfootball, dégradation gracieuse
+  ├─ openfootball.ts       ← enrichit scores + buts (CDN, jointure par nom)
+  ├─ worldcup2026.ts       ← live + résultats (worldcup26.ir, jointure par id)
+  ├─ composite.ts          ← statique + openfootball + worldcup26, dégradation gracieuse
   └─ mock.ts               ← provider déterministe (tests)
 src/lib/data/              ← API métier : getMatches/getMatchById/getLiveMatches/
                              getStandings/getBracket/getTeams/getTeamByCode
@@ -95,14 +95,19 @@ L'application fonctionne sans aucune de ces variables (voir `.env.example`).
 
 Aucune carte bancaire, aucun service payant, pas de base de données.
 
-### Fraîcheur des données (ISR)
+### Fraîcheur des données
+
+Pendant le tournoi, les vues qui dépendent des résultats sont **rendues dynamiquement**
+(serveur), avec les sources distantes mises en cache pour rester économes et protéger
+la source live : **openfootball** ~15 min, **worldcup26.ir** ~30 s (cache partagé).
 
 | Contenu | Méthode | Fréquence |
 |---|---|---|
-| Accueil (à venir / terminés) | ISR (`revalidate`) | 30 min |
-| Classements / bracket | ISR | 15 min |
-| Détail d'un match / fiche équipe | ISR | 30 min |
-| Live (minute / score) | Polling React Query côté client via `/api/live` | 30 s **si ≥ 1 match en cours**, sinon désactivé |
+| Classements `/groupes`, bracket `/bracket`, détail `/match/[id]` | Rendu dynamique (serveur) | à chaque requête (sources en cache) |
+| Accueil `/`, fiche équipe `/equipe/[code]` | ISR + réconciliation live côté client | régénération + fetch au montage |
+| Live (minute / score, accueil) | Polling React Query via `/api/live` | 30 s **si ≥ 1 match en cours**, sinon désactivé (fetch au montage systématique) |
+
+> Sources de scores : **openfootball** (jointure par nom) + **worldcup26.ir** (jointure par `id`, fiable, gère le live). **Cartons et compositions ne sont pas fournis** par ces sources gratuites — la chronologie affiche les buts.
 
 ## ✅ Qualité
 
